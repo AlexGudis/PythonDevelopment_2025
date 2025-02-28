@@ -4,8 +4,23 @@ import os
 import sys
 import random
 import urllib.request
+from io import StringIO
 
 list_cows = ['dragon', 'frogs', 'kiss', 'kitty', 'koala']
+
+
+character = cowsay.read_dot_cow(StringIO("""
+$the_cow = <<EOC;
+         $thoughts
+          $thoughts
+           ___
+          (o o)
+         (  V  )
+        /--m-m-
+EOC
+"""))
+
+
 
 def bullscows(check_word: str, ans_word: str) -> (int, int):
     cows = 0
@@ -21,21 +36,19 @@ def bullscows(check_word: str, ans_word: str) -> (int, int):
 
 
 def ask(prompt: str, valid: list[str] = None) -> str:
-    character = random.choice(list_cows)
-    print(cowsay.cowsay(prompt, cow=character))
+    print(cowsay.cowthink(prompt, cowfile=character))
     input_word = input()
     if valid is not None:
         while input_word not in valid:
             print('Inccorrect input, try again')
-            print(cowsay.cowsay(prompt, cow=character))
+            print(cowsay.cowthink(prompt, cowfile=character))
             input_word = input()    
     return input_word
 
 
 def inform(format_string: str, bulls: int, cows: int) -> None:
     message = format_string.format(bulls, cows)
-    character = random.choice(list_cows)
-    print(cowsay.cowsay(message, cow=character))
+    print(cowsay.cowthink(message, cowfile=character))
 
 
 def gameplay(ask: callable, inform: callable, words: list[str]) -> int:
@@ -79,5 +92,6 @@ parser.add_argument(
 
 args = parser.parse_args()
 words = get_words(args.dict)
+
 
 print(f'Попытки = {gameplay(ask, inform, words)}')
