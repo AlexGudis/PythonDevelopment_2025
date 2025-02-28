@@ -2,6 +2,8 @@ import cowsay
 import argparse
 import os
 import sys
+import random
+import urllib
 
 def bullscows(check_word: str, ans_word: str) -> (int, int):
     cows = 0
@@ -16,6 +18,30 @@ def bullscows(check_word: str, ans_word: str) -> (int, int):
     return (buls, cows)
 
 
+def ask(prompt: str, valid: list[str] = None) -> str:
+    input_word = input(prompt)
+    if valid is not None:
+        while input_word not in valid:
+            print('Inccorrect input, try again')
+            input_word = input_word(prompt)    
+    return input_word
 
-print(bullscows('apple', 'papaaaa'))
+
+def inform(format_string: str, bulls: int, cows: int) -> None:
+    print(format_string.format(bulls, cows))
+
+
+def gameplay(ask: callable, inform: callable, words: list[str]) -> int:
+    counter = 0
+    word_ans = random.choice(words)
+    word_from_user = ''
+    while word_from_user != word_ans:
+        counter += 1
+        word_from_user = ask("Введите слово: ", words)
+        bulls, cows = bullscows(word_from_user, word_ans)
+        inform("Быки: {}, Коровы: {}", bulls, cows)
+
+    print('Succeed!!!')
+    return counter
+
 
