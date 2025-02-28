@@ -5,6 +5,8 @@ import sys
 import random
 import urllib.request
 
+list_cows = ['dragon', 'frogs', 'kiss', 'kitty', 'koala']
+
 def bullscows(check_word: str, ans_word: str) -> (int, int):
     cows = 0
     buls = 0
@@ -19,16 +21,21 @@ def bullscows(check_word: str, ans_word: str) -> (int, int):
 
 
 def ask(prompt: str, valid: list[str] = None) -> str:
-    input_word = input(prompt)
+    character = random.choice(list_cows)
+    print(cowsay.cowsay(prompt, cow=character))
+    input_word = input()
     if valid is not None:
         while input_word not in valid:
             print('Inccorrect input, try again')
-            input_word = input(prompt)    
+            print(cowsay.cowsay(prompt, cow=character))
+            input_word = input()    
     return input_word
 
 
 def inform(format_string: str, bulls: int, cows: int) -> None:
-    print(format_string.format(bulls, cows))
+    message = format_string.format(bulls, cows)
+    character = random.choice(list_cows)
+    print(cowsay.cowsay(message, cow=character))
 
 
 def gameplay(ask: callable, inform: callable, words: list[str]) -> int:
