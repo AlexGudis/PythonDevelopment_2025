@@ -3,7 +3,7 @@ import argparse
 import os
 import sys
 import random
-import urllib
+import urllib.request
 
 def bullscows(check_word: str, ans_word: str) -> (int, int):
     cows = 0
@@ -44,19 +44,31 @@ def gameplay(ask: callable, inform: callable, words: list[str]) -> int:
     print('Succeed!!!')
     return counter
 
+def get_words(dict: str):
+    words = []
+    if dict.startswith('https://'):
+        with urllib.request.urlopen(dict) as response:
+            words =  response.read().decode('utf-8').splitlines()
+    else:
+        with open(dict, "r") as f:
+            words = f.read().split('\n')
+    return words
+
 
 parser = argparse.ArgumentParser()
 parser.add_argument(
-    "dict", default=None, nargs='?',
+    "dict", 
     help="File name or URL to word, which will be used in game"
 )
 
 parser.add_argument(
     "size",
     type=int,
+    nargs="?",
     help="Len of used words (5 is a default)",
     default=5,
 )
 
 args = parser.parse_args()
-print(args.dict, args.size)
+words = get_words(args.dict)
+print(words[0:10])
