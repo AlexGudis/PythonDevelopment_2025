@@ -45,3 +45,18 @@ def gameplay(ask: callable, inform: callable, words: list[str]) -> int:
     return counter
 
 
+parser = argparse.ArgumentParser()
+parser.add_argument(
+    "dict", default=None, nargs='?',
+    help="File name or URL to word, which will be used in game"
+)
+
+parser.add_argument(
+    "size",
+    type=int,
+    help="Len of used words (5 is a default)",
+    default=5,
+)
+
+args = parser.parse_args()
+print(args.dict, args.size)
