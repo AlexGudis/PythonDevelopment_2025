@@ -23,7 +23,7 @@ def ask(prompt: str, valid: list[str] = None) -> str:
     if valid is not None:
         while input_word not in valid:
             print('Inccorrect input, try again')
-            input_word = input_word(prompt)    
+            input_word = input(prompt)    
     return input_word
 
 
@@ -34,6 +34,7 @@ def inform(format_string: str, bulls: int, cows: int) -> None:
 def gameplay(ask: callable, inform: callable, words: list[str]) -> int:
     counter = 0
     word_ans = random.choice(words)
+    print(f'WORD_ANS = {word_ans}')
     word_from_user = ''
     while word_from_user != word_ans:
         counter += 1
@@ -71,4 +72,5 @@ parser.add_argument(
 
 args = parser.parse_args()
 words = get_words(args.dict)
-print(words[0:10])
+
+print(f'Попытки = {gameplay(ask, inform, words)}')
