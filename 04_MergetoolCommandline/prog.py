@@ -14,7 +14,7 @@ class cows(cmd.Cmd):
     def create_cow_params(self, i, line):
         cow_params = {'cow':'default', 'eyes':'oo', 'tongue':'  ', 'preset' : None, 'width' : 40, 'wrap_text' : True}
         while i < len(line) and line[i] != 'reply':
-            print(f'new_param={line[i]}')
+            #print(f'new_param={line[i]}')
             if line[i] in self.all_cows:
                 cow_params['cow'] = line[i]
             elif '=' in line[i]:
@@ -75,7 +75,7 @@ class cows(cmd.Cmd):
         
         message1, cow_params1, message2, cow_params2 = self.make_params(line)
 
-        print(message1, cow_params1, message2, cow_params2)
+        #print(message1, cow_params1, message2, cow_params2)
         
         cow1 = cowsay.cowsay(message1, cow=cow_params1['cow'], eyes=cow_params1['eyes'], tongue=cow_params1['tongue'], preset=cow_params1['preset'], wrap_text=cow_params1['wrap_text'], width=int(cow_params1['width']))
         cow2 = cowsay.cowsay(message2, cow=cow_params2['cow'], eyes=cow_params2['eyes'], tongue=cow_params2['tongue'], preset=cow_params2['preset'], wrap_text=cow_params2['wrap_text'], width=int(cow_params2['width']))
@@ -106,8 +106,8 @@ class cows(cmd.Cmd):
         """
         message1, cow_params1, message2, cow_params2 = self.make_params(line)
         
-        cow1 = cowsay.cowsay(message1, cow=cow_params1['cow'], eyes=cow_params1['eyes'], tongue=cow_params1['tongue'], preset=cow_params1['preset'], wrap_text=cow_params1['wrap_text'], width=cow_params1['width'])
-        cow2 = cowsay.cowsay(message2, cow=cow_params2['cow'], eyes=cow_params2['eyes'], tongue=cow_params2['tongue'], preset=cow_params2['preset'], wrap_text=cow_params2['wrap_text'], width=cow_params2['width'])
+        cow1 = cowsay.cowsay(message1, cow=cow_params1['cow'], eyes=cow_params1['eyes'], tongue=cow_params1['tongue'], preset=cow_params1['preset'], wrap_text=cow_params1['wrap_text'], width=int(cow_params1['width']))
+        cow2 = cowsay.cowsay(message2, cow=cow_params2['cow'], eyes=cow_params2['eyes'], tongue=cow_params2['tongue'], preset=cow_params2['preset'], wrap_text=cow_params2['wrap_text'], width=int(cow_params2['width']))
 
         self.drow_cows(cow1, cow2)
         
@@ -126,13 +126,6 @@ class cows(cmd.Cmd):
             print(cowsay.list_cows(args))
         for el in self.all_cows:
             print(el)
-    
-
-    def complete_list_cows(self, text, line, begidx, endidx):
-        print()
-        print(f'text={text}, line={line}, begidx={begidx}, endidx={endidx}')
-        print()
-        #return "tt"
 
     
     def do_make_bubble(self, args):
