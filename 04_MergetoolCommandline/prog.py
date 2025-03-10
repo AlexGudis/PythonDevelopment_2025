@@ -98,7 +98,9 @@ class cows(cmd.Cmd):
     
 
     def do_list_cows(self, args):
-        "Print all avalable cows to drow"
+        "Print all avalable cows from a given directory or default one to drow"
+        if args:
+            print(cowsay.list_cows(args))
         for el in self.all_cows:
             print(el)
     
@@ -108,6 +110,14 @@ class cows(cmd.Cmd):
         print(f'text={text}, line={line}, begidx={begidx}, endidx={endidx}')
         print()
         #return "tt"
+
+    
+    def do_make_bubble(self, args):
+        "Just prints a text inside a bubble. It's funny)"
+        print(cowsay.make_bubble(args))
+
+    def do_EOF(self, args):
+        return 1
 
 
 if __name__ == '__main__':
