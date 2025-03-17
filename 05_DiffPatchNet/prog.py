@@ -50,9 +50,29 @@ async def chat(reader, writer):
                             writer.close()
                             await writer.wait_closed()
                     case ['cows']:
-                        already = set(clients.keys())
+                        already = set(clients.keys()) 
                         free = set(cowsay.list_cows()) - already
                         await user.que.put(", ".join(list(free)))
+
+                    case ['yield', *msg]:
+                        if user.name not in clients.keys():
+                            await user.que.put("You are not signed in yet. Please login.")
+                        else:
+                            for out in clients.values():
+                                if out is not clients[user.name]:
+                                    await out.put(f"{user.name} {' '.join(msg)}")
+                            
+
+                    case ['say', to, *msg]:
+                        if user.name not in clients.keys():
+                            await user.que.put("You are not signed in yet. Please login.")
+                        elif to not in clients.keys():
+                            await user.que.put("This user is not signed in yet")
+                        else:
+                            await clients[to].put(f"{user.name} {' '.join(msg)}")
+                    
+                    case [_]:
+                        await user.que.put("This isn't a valid command!")
 
 
 
