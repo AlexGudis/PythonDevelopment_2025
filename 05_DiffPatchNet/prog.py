@@ -1,48 +1,65 @@
 #!/usr/bin/env python3
 import asyncio
 import shlex
+import cowsay
+
+class User:
+    def __init__(self):
+        self.name = None
+        self.que = asyncio.Queue()
 
 clients = {}
 
 async def chat(reader, writer):
-    #me = "{}:{}".format(*writer.get_extra_info('peername'))
-    #print(me)
+    test_connect = "{}:{}".format(*writer.get_extra_info('peername'))
+    print(test_connect)
 
 
-    current_client = None
-    que = asyncio.Queue()
+    user = User()
 
     send = asyncio.create_task(reader.readline())
-    receive = asyncio.create_task(que.get())
+    receive = asyncio.create_task(user.que.get())
     while not reader.at_eof():
         done, pending = await asyncio.wait([send, receive], return_when=asyncio.FIRST_COMPLETED)
         for q in done:
             if q is send:
                 send = asyncio.create_task(reader.readline())
 
-                #print(f'Message send type is {q.result().decode()}')
                 line = q.result().decode()
                 line = shlex.split(line)
 
 
                 match line:
                     case ['login', cow]:
-                        #print(f'I got login command from u and the cow is {cow}')
-                        current_client = cow
-                        clients[current_client] = que
+                        if cow not in cowsay.list_cows():
+                            await user.que.put("You cannot choose this login. Please check cows command")
+                        elif cow not in clients.keys():
+                            user.name = cow
+                            clients[user.name] = user.que
+                        else:
+                            await user.que.put("This login is already assigned. Please chose another one from cows command")
+
                     case ['who']:
-                        await que.put(", ".join(clients.keys()))
+                        await user.que.put(", ".join(clients.keys()))
+
+                    case ['quit']:
+                            send.cancel()
+                            receive.cancel()
+                            print(user.name, "DONE")
+                            del clients[user.name]
+                            writer.close()
+                            await writer.wait_closed()
+                    case ['cows']:
+                        already = set(clients.keys())
+                        free = set(cowsay.list_cows()) - already
+                        await user.que.put(", ".join(list(free)))
+
+
 
             elif q is receive:
-                receive = asyncio.create_task(que.get())
+                receive = asyncio.create_task(user.que.get())
                 writer.write(f"{q.result()}\n".encode())
                 await writer.drain()
-    send.cancel()
-    receive.cancel()
-    print(current_client, "DONE")
-    del clients[current_client]
-    writer.close()
-    await writer.wait_closed()
 
 async def main():
     server = await asyncio.start_server(chat, '0.0.0.0', 1337)
