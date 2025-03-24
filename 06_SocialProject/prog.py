@@ -33,12 +33,12 @@ async def chat(reader, writer):
                 match line:
                     case [id, 'login', cow]:
                         if cow not in cowsay.list_cows():
-                            await user.que.put("You cannot choose this login. Please check cows command")
+                            await user.que.put("0 You cannot choose this login. Please check cows command")
                         elif cow not in clients.keys():
                             user.name = cow
                             clients[user.name] = user.que
                         else:
-                            await user.que.put("This login is already assigned. Please chose another one from cows command")
+                            await user.que.put("0 This login is already assigned. Please chose another one from cows command")
 
                     case [id, 'who']:
                         await user.que.put(f'{id} {", ".join(clients.keys())}')
@@ -57,23 +57,24 @@ async def chat(reader, writer):
 
                     case ['yield', *msg]:
                         if user.name not in clients.keys():
-                            await user.que.put("You are not signed in yet. Please login.")
+                            await user.que.put("0 You are not signed in yet. Please login.")
                         else:
                             for out in clients.values():
                                 if out is not clients[user.name]:
                                     await out.put(f"{user.name} {' '.join(msg)}")
                             
 
-                    case ['say', to, *msg]:
+                    case [id, 'say', to, *msg]:
                         if user.name not in clients.keys():
-                            await user.que.put("You are not signed in yet. Please login.")
+                            await user.que.put("0 You are not signed in yet. Please login.")
                         elif to not in clients.keys():
-                            await user.que.put("This user is not signed in yet")
+                            await user.que.put("0 This user is not signed in yet")
                         else:
-                            await clients[to].put(f"{user.name} {' '.join(msg)}")
+                            cow1 = cowsay.cowsay(message=' '.join(msg), cow=user.name)
+                            await clients[to].put(f"{id}: {cow1}")
                     
                     case [_]:
-                        await user.que.put("This isn't a valid command!")
+                        await user.que.put("0 This isn't a valid command!")
 
 
 

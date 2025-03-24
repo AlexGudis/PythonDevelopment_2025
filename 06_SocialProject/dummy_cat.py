@@ -26,20 +26,30 @@ class chat(cmd.Cmd):
     def complete_login(self, text, line, begidx, endidx):
         s.sendall(f"1 cows\n".encode())
         tokens = (line + ".").split()
-        return [c for c in queue.get().split(", ") if c.startswith(tokens[-1][:-1])]
+        return [c for c in quе.get().split(", ") if c.startswith(tokens[-1][:-1])]
 
     def do_eof(self, *args):
         return 1
+    
+    def do_say(self, args):
+        s.sendall(f"0 say {args}\n".encode())
+
+    def complete_say(self, text, line, begidx, endidx):
+        s.sendall(f"1 who\n".encode())
+        self.command_counter += 1
+        tokens = (line + ".").split()
+        return [c for c in queue.get().split(", ") if c.startswith(tokens[-1][:-1])]
 
 
     def msg_processing(self, cmdline, s):
         while True:
             response = s.recv(1024).rstrip().decode()
+            print(f'RESPONSE = {response}')
             if response[0] == '0':
                 print(f"\n{response[2:]}\n{cmdline.prompt}{readline.get_line_buffer() if readline.get_line_buffer() else ""}",
                     end="", flush=True)
             else:
-                queue.put(response[2:])
+                quе.put(response[2:])
     
 
 
