@@ -43,7 +43,7 @@ async def chat(reader, writer):
                     case [id, 'who']:
                         await user.que.put(f'{id} {", ".join(clients.keys())}')
 
-                    case ['quit']:
+                    case [com_id, 'quit']:
                             send.cancel()
                             receive.cancel()
                             print(user.name, "DONE")
@@ -62,7 +62,7 @@ async def chat(reader, writer):
                             for out in clients.values():
                                 if out is not clients[user.name]:
                                     cow1 = cowsay.cowsay(message=' '.join(msg), cow=user.name)
-                                    await out.put(f"{id}: {cow1}")
+                                    await out.put(f"{id}:{cow1}")
                             
 
                     case [id, 'say', to, *msg]:
