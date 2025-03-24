@@ -55,13 +55,14 @@ async def chat(reader, writer):
                         free = set(cowsay.list_cows()) - already
                         await user.que.put(f'{id} {", ".join(list(free))}')
 
-                    case ['yield', *msg]:
+                    case [id, 'yield', *msg]:
                         if user.name not in clients.keys():
                             await user.que.put("0 You are not signed in yet. Please login.")
                         else:
                             for out in clients.values():
                                 if out is not clients[user.name]:
-                                    await out.put(f"{user.name} {' '.join(msg)}")
+                                    cow1 = cowsay.cowsay(message=' '.join(msg), cow=user.name)
+                                    await out.put(f"{id}: {cow1}")
                             
 
                     case [id, 'say', to, *msg]:

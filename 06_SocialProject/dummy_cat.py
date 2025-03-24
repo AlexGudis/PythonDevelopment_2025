@@ -31,6 +31,9 @@ class chat(cmd.Cmd):
     def do_eof(self, *args):
         return 1
     
+    def do_yield(self, args):
+        s.sendall(f"0 yield {args}\n".encode())
+    
     def do_say(self, args):
         s.sendall(f"0 say {args}\n".encode())
 
